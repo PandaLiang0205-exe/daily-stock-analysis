@@ -16,13 +16,22 @@
       })();
     </script>
     <title>dsa-web</title>
-    <script type="module" crossorigin src="/daily-stock-analysis/assets/index-BWf3Aybr.js"></script>
+    <script type="module" crossorigin src="/daily-stock-analysis/assets/index-BETmibyf.js"></script>
     <link rel="modulepreload" crossorigin href="/daily-stock-analysis/assets/vendor-react-BzB2o5Ol.js">
     <link rel="modulepreload" crossorigin href="/daily-stock-analysis/assets/vendor-DfNvL7Zg.js">
     <link rel="modulepreload" crossorigin href="/daily-stock-analysis/assets/vendor-icons-Clipw2oG.js">
     <link rel="modulepreload" crossorigin href="/daily-stock-analysis/assets/vendor-router-DUil8rt8.js">
     <link rel="stylesheet" crossorigin href="/daily-stock-analysis/assets/index-BsmQFub7.css">
-  </head>
+  <script>
+(function(l){
+  if(l.search.startsWith('?p=/')){
+    var parts=l.search.slice(1).split('&');
+    var path=parts[0].slice(2).replace(/~and~/g,'&');
+    var qs=parts[1]?'?'+parts[1].slice(2).replace(/~and~/g,'&'):'';
+    window.history.replaceState(null,null,l.pathname+path+qs+l.hash);
+  }
+}(window.location));
+</script></head>
   <body>
     <div id="root"></div>
   </body>
