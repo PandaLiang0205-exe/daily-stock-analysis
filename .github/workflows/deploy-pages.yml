@@ -1,0 +1,49 @@
+name: Deploy Frontend to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/dsa-web/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: apps/dsa-web
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: apps/dsa-web
+        env:
+          # Railway 後端 API 網址
+          VITE_API_URL: https://daily-stock-analysis-production.up.railway.app
+          # GitHub Pages 子路徑
+          VITE_BASE_PATH: /daily-stock-analysis/
+        run: npm run build
+
+      - name: Add SPA routing support (404.html)
+        run: cp static/index.html static/404.html
+
+      - name: Add .nojekyll
+        run: touch static/.nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./static
+          publish_branch: gh-pages

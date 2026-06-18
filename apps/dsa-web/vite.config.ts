@@ -92,6 +92,8 @@ const getVendorChunkName = (id: string): string | undefined => {
 
 // https://vite.dev/config/
 export default defineConfig({
+  // 支援 GitHub Pages 子路徑部署，預設 '/' 給 Railway 用
+  base: process.env.VITE_BASE_PATH || '/',
   define: {
     __APP_PACKAGE_VERSION__: JSON.stringify(packageJson.version ?? '0.0.0'),
     __APP_BUILD_TIME__: JSON.stringify(buildTime),
