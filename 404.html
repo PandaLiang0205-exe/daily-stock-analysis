@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/daily-stock-analysis/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (() => {
+        const storageKey = 'theme';
+        const root = document.documentElement;
+        const storedTheme = localStorage.getItem(storageKey);
+        const theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'dark';
+        root.classList.remove('light', 'dark');
+        root.classList.add(theme);
+        root.style.colorScheme = theme;
+      })();
+    </script>
+    <title>dsa-web</title>
+    <script type="module" crossorigin src="/daily-stock-analysis/assets/index-CtJ0hhox.js"></script>
+    <link rel="modulepreload" crossorigin href="/daily-stock-analysis/assets/vendor-react-BzB2o5Ol.js">
+    <link rel="modulepreload" crossorigin href="/daily-stock-analysis/assets/vendor-DfNvL7Zg.js">
+    <link rel="modulepreload" crossorigin href="/daily-stock-analysis/assets/vendor-icons-Clipw2oG.js">
+    <link rel="modulepreload" crossorigin href="/daily-stock-analysis/assets/vendor-router-DUil8rt8.js">
+    <link rel="stylesheet" crossorigin href="/daily-stock-analysis/assets/index-BsmQFub7.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
