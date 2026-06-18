@@ -35,47 +35,50 @@ jobs:
           VITE_BASE_PATH: /daily-stock-analysis/
         run: npm run build
 
-      - name: Add SPA routing support (404.html)
+      - name: Add SPA routing support for GitHub Pages
         run: |
-          cat > static/404.html << 'EOF'
-          <!DOCTYPE html>
+          python3 - << 'PYEOF'
+          import pathlib
+
+          # 404.html: 把路徑編碼後重定向到首頁
+          html_404 = """<!DOCTYPE html>
           <html>
           <head>
             <meta charset="utf-8">
             <title>Daily Stock Analysis</title>
             <script>
-              // GitHub Pages SPA redirect trick
-              // Encodes the path and redirects to index.html with it as a query param
-              var segmentCount = 1;
+              var seg = 1;
               var l = window.location;
               l.replace(
                 l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-                l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?p=/' +
-                l.pathname.slice(1).split('/').slice(segmentCount).join('/').replace(/&/g, '~and~') +
-                (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+                l.pathname.split('/').slice(0, 1 + seg).join('/') + '/?p=/' +
+                l.pathname.slice(1).split('/').slice(seg).join('/').replace(/&/g,'~and~') +
+                (l.search ? '&q=' + l.search.slice(1).replace(/&/g,'~and~') : '') +
                 l.hash
               );
             </script>
           </head>
           <body></body>
-          </html>
-          EOF
+          </html>"""
+          pathlib.Path('static/404.html').write_text(html_404, encoding='utf-8')
 
-      - name: Patch index.html for SPA routing
-        run: |
-          SCRIPT='<script>
+          # 在 index.html 的 </head> 前插入還原路徑的腳本
+          spa_script = """<script>
           (function(l){
-            if(l.search[1]==="/"){
-              var d=l.search.slice(1).split("&").map(function(s){return s.replace(/~and~/g,"&")});
-              window.history.replaceState(null,null,l.pathname.slice(0,-1)+d[0]+(d[1]?"&"+d[1].slice(1):"")+l.hash);
-            }
-            if(l.search.startsWith("?p=")){
-              var path=l.search.slice(3).split("&")[0];
-              window.history.replaceState(null,null,l.pathname+path+l.hash);
+            if(l.search.startsWith('?p=/')){
+              var parts=l.search.slice(1).split('&');
+              var path=parts[0].slice(2).replace(/~and~/g,'&');
+              var qs=parts[1]?'?'+parts[1].slice(2).replace(/~and~/g,'&'):'';
+              window.history.replaceState(null,null,l.pathname+path+qs+l.hash);
             }
           }(window.location));
-          </script>'
-          sed -i "s|</head>|${SCRIPT}</head>|" static/index.html
+          </script>"""
+
+          idx = pathlib.Path('static/index.html')
+          content = idx.read_text(encoding='utf-8')
+          idx.write_text(content.replace('</head>', spa_script + '</head>', 1), encoding='utf-8')
+          print('SPA routing files written successfully.')
+          PYEOF
 
       - name: Add .nojekyll
         run: touch static/.nojekyll
